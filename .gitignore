@@ -1,0 +1,16 @@
+flash-4:www alnv$ cat .gitignore
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.buildpath
+.project
+.settings/
+.build/
+.idea/
+nbproject/
+
+# npm
+node_modules/
+
