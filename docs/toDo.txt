@@ -1,0 +1,29 @@
+- Def. Schema
+	- Attr
+		-	Datentyp
+		- Label
+		
+- Def. Collection
+
+	- CRUD
+		- Delete(id)
+		- Insert(data)
+		- Update({attr}, data)
+		
+	- Query
+		- findOne(attr)
+		- findById(attr)
+		- find(attr)
+			- Where()
+				
+- Def. Curosr
+	- Fetch()
+	- Count()
+	- Sort()
+
+- Def. Observer
+	- onDelete()
+	- onChange()
+	- onAdd()
+	
+- Def. LocalStorage API
