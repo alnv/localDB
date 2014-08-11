@@ -11,15 +11,14 @@
 		- Update({attr}, data)
 		
 	- Query
-		- findOne(attr)
 		- findById(attr)
 		- find(attr)
-			- Where()
 				
 - Def. Curosr
 	- Fetch()
 	- Count()
 	- Sort()
+	- Where()
 
 - Def. Observer
 	- onDelete()

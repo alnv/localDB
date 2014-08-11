@@ -28,7 +28,7 @@ var Beagle;
 		*
 		*/
 		
-		Save().init();
+		DB().init();
 		
 		var _methods = {
 		
@@ -60,8 +60,7 @@ var Beagle;
 		
 		var _schema = {
 			_id: {
-				label: 'id',
-				Type: Number
+				label: 'id'
 			}
 		};
 		
@@ -99,37 +98,169 @@ var Beagle;
 		
 		var _methods = {
 			
-			insert: function(_data, callback){
-				
-				callback(_data);
-				
-			},
-			
-			delete: function(id){
-				
-				
+			insert: function(_data){
+
+				DB().set(formatter(_data));
 				
 			},
 			
-			update: function(attr, data){
+			removeById: function(id){
 				
 				
+				
+			},
+			
+			updateByid: function(id, data){
+				
+				
+				
+			},
+			
+			find: function(attr){
+				
+				var db = DB().get();
+				
+				var arr = [];
+				var toSearch = {};
+				var found = [];
+				
+				for(var key in db){
+					arr.push(unform(db[key]));
+				}
+								
+				for(var key in attr){
+					
+					if(key !== undefined){
+						toSearch[0] = key;
+						toSearch[1] = attr[key];	
+				
+					}else{
+				
+						throw error.noQuery;
+				
+					}
+				
+				}
+				
+				if(attr === undefined){
+					
+					return Cursor(arr);
+						
+				}
+				
+				
+				each(arr, function(doc){
+					
+					if(doc[toSearch[0]] === toSearch[1]){
+						
+						found.push(doc);
+						
+					}
+					
+				});
+				
+				return Cursor(found);
+				
+			
+			},
+			
+			findById: function(id){
+				
+				return unform(DB().get()[id]);
 				
 			}
 			
 		}
+		
+		function unform(db_obj){
+			var obj = {};
+			for(var key in db_obj){
+				
+				if(key !== '_id'){
+					obj[key] = db_obj[key].value;
+				}else{
+					obj[key] = db_obj[key];
+				}
+				
+			}
+			return obj;
+		}
+		
+		function formatter(_data){
+			
+			var doc = {};
+			
+			for(var key in getSchema()){
+				
+				if(key !== '_id'){
+					
+					
+					doc[key] = {
+						value: _data[key],
+						label: getSchema()[key].label
+					};
+					
+					
+						
+				}else{
+					
+					doc[key] = createId();
+					
+				}
+				
+			
+			}
+			
+			return doc;
+			
+		}
+		
 		
 		return _methods;
 		
 	
 	}
 	
+	
 	/*******
 	*
-	* Synchronize to Localstorage AIP
+	* CURSOR
 	*
 	*******/
-	var Save = function(){
+	
+	var Cursor = function(obj){
+		
+		var _methods = {
+		
+			count: function(){
+				
+				return obj.length;
+			
+			},
+			
+			fetch: function(){
+				
+				return obj;
+				
+			},
+			
+			where: function(attr){
+				
+			}
+		
+		};
+		
+		return _methods;
+		
+	}
+	
+	/*******
+	*
+	* Synchronize to Localstorage API
+	*
+	*******/
+	
+	var DB = function(){
 		
 		
 		var _methods = {
@@ -140,15 +271,11 @@ var Beagle;
 				
 			},
 			
-			setName: function(newName){
+			set: function(obj){
 				
-				//
-				
-			},
-			
-			show: function(){
-				
-				//
+				var db = this.get();
+				db[obj._id] = obj;
+				localStorage.setItem(DBName, JSON.stringify(db));
 				
 			},
 			
@@ -177,7 +304,7 @@ var Beagle;
 				
 				if(_methods.get() === undefined){
 					
-					localStorage.setItem(DBName, "[]");	
+					localStorage.setItem(DBName, "{}");	
 				
 				}
 				
@@ -211,16 +338,18 @@ var Beagle;
 	* ERRORS
 	*
 	*******/
+	
 	var error = {
 		
-		noLocalStorage: "Your Browser does not Support LocalStorage"
+		noLocalStorage: "Your Browser does not Support LocalStorage",
+		noQuery: "Your find parameter are empty"
 		
 	};
 	
 	
 	/*******
 	*
-	* HELPER METHODEN
+	* HELPER FUNCTIONS
 	*
 	*******/
 	
@@ -287,54 +416,29 @@ var Beagle;
 	
 	"use strict";
 	
-	var Schema = Beagle.Schema({
-		
-		title: {
-			label: 'Titel',
-			Type: String
+	Beagle.Schema({
+		username: {
+			label: 'Username'
 		},
-		
-		plz: {
-			label: 'Postleitzahl',
-			Type: Number
-		},
-		
-		gender: {
-			label: 'Geschlecht',
-			Type: Boolean
-		},
-		
-		address: {
-			label: 'Kommentare',
-			Type: Object
-		},
-		
-		comments: {
-			label: 'Kommentare',
-			Type: Array
+		email: {
+			label: 'Email'
 		}
+	});
+	
+	var btn = document.getElementById('save_btn').addEventListener('click', function(){
 		
-	});
+		var obj = {
+			
+			username: document.getElementById('username').value,
+			email: document.getElementById('email').value
+			
+		};
+		
+		Beagle.insert(obj);
+		
+	}, false);
 	
-	Beagle.insert({
-		title: 'Test',
-		plz: 75172,
-		gender: false,
-		address: {
-			city: 'Pforzheim',
-			street: 'Maurerstraße'
-		},
-		comments: [
-			{
-				msg: 'Hallo'
-			},
-			{
-				msg: 'Welt'
-			}
-		]
-	}, function(doc){
-		console.log(doc);
-	});
-	
+	var all = Beagle.find();
+	console.log(all.fetch());
 	
 })();
