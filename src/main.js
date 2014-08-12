@@ -58,11 +58,8 @@ var Beagle;
 		*
 		*/
 		
-		var _schema = {
-			_id: {
-				label: 'id'
-			}
-		};
+		var _schema = {};
+		_schema['_id'] = _data['_id'] ||  { label: 'id' };
 		
 		/*
 		*
@@ -70,11 +67,13 @@ var Beagle;
 		*
 		*/
 		
+		
 		for(var k in _data){
 			
 			_schema[k] = _data[k]
 			
 		}
+		
 		
 		schema = _schema;
 		
@@ -99,21 +98,37 @@ var Beagle;
 		var _methods = {
 			
 			insert: function(_data){
-
-				DB().set(formatter(_data));
+				
+				DB().set(formatter(_data));	
 				
 			},
 			
 			removeById: function(id){
-				
-				
+			
+				//var attr = ['_id', id];
+				var db = DB().get();
+			
+				delete db[id];
+				DB().refresh(db)
+				db = null;
+				//delete DB().remove(attr);
 				
 			},
 			
 			updateByid: function(id, data){
-				
-				
-				
+			
+				for(var key in data){
+					
+					if(key === 'set'){
+						//set function
+					}
+					
+					if(key === 'push'){
+						//push function
+					}
+					
+				}
+			
 			},
 			
 			find: function(attr){
@@ -131,6 +146,7 @@ var Beagle;
 				for(var key in attr){
 					
 					if(key !== undefined){
+					
 						toSearch[0] = key;
 						toSearch[1] = attr[key];	
 				
@@ -159,6 +175,8 @@ var Beagle;
 					
 				});
 				
+				db = null;
+				
 				return Cursor(found);
 				
 			
@@ -171,6 +189,18 @@ var Beagle;
 			}
 			
 		}
+		
+		//Update Helper function
+		function update_set(id){
+			
+			
+			
+		};
+		function update_push(id){
+			
+			
+			
+		};
 		
 		function unform(db_obj){
 			var obj = {};
@@ -190,27 +220,24 @@ var Beagle;
 			
 			var doc = {};
 			
-			for(var key in getSchema()){
-				
-				if(key !== '_id'){
-					
-					
-					doc[key] = {
-						value: _data[key],
-						label: getSchema()[key].label
-					};
-					
-					
-						
-				}else{
-					
-					doc[key] = createId();
-					
-				}
-				
+			if(_data['_id'] === undefined){
+			
+				_data['_id'] = createId();
 			
 			}
 			
+			for(var key in getSchema()){
+				
+				doc[key] = {
+					
+					value: _data[key],
+					label: getSchema()[key].label
+				
+				};
+				
+			
+			}
+					
 			return doc;
 			
 		}
@@ -274,11 +301,17 @@ var Beagle;
 			set: function(obj){
 				
 				var db = this.get();
-				db[obj._id] = obj;
+				db[obj._id.value] = obj;
 				localStorage.setItem(DBName, JSON.stringify(db));
 				
 			},
 			
+			refresh: function(db){
+				
+				localStorage.setItem(DBName, JSON.stringify(db));
+				
+			},
+
 			get: function(){
 				
 				var strDB = localStorage.getItem(DBName);
@@ -342,7 +375,7 @@ var Beagle;
 	var error = {
 		
 		noLocalStorage: "Your Browser does not Support LocalStorage",
-		noQuery: "Your find parameter are empty"
+		noQuery: "Your find parameter is empty"
 		
 	};
 	
@@ -438,7 +471,10 @@ var Beagle;
 		
 	}, false);
 	
-	var all = Beagle.find();
-	console.log(all.fetch());
+	
+	//Beagle.removeById(1323646724530);
+	//var test = Beagle.findById(884378941887);
+	Beagle.insert({username: 'alex', email: 'test'});
+	//Beagle.updateByid(884378941887, {set: {email: 'SET!!!'}});
 	
 })();
