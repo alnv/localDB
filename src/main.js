@@ -115,21 +115,51 @@ var Beagle;
 				
 			},
 			
-			updateByid: function(id, data){
-			
-				for(var key in data){
+			updateById: function(id, modifiers){
+				
+				var nModel;
+				
+				if(!this.findById(id)._id){
+							
+					return undefined;
+						
+				}
+				
+				var obj = this.findById(id);
+				
+				
+				for(var key in modifiers){
+					
+					
 					
 					if(key === 'set'){
-						//set function
+						
+						nModel = update_set(obj, modifiers[key]);
+
 					}
 					
 					if(key === 'push'){
-						//push function
+						
+						nModel = update_push(obj, modifiers[key]);
+						
 					}
 					
 				}
-			
+				
+				var db = DB().get();
+				db[id] = formatter(nModel);
+				DB().refresh(db);
+				db = null;
+				
+				return nModel;
+				
 			},
+			
+			/*******
+			*
+			* QUERY METHODS
+			*
+			*******/
 			
 			find: function(attr){
 				
@@ -191,27 +221,56 @@ var Beagle;
 		}
 		
 		//Update Helper function
-		function update_set(id){
+		function update_set(obj, modifiers){
 			
+			var toModigfy = obj;
 			
+			for(var key in modifiers){
+			
+				if(getSchema()[key] !== undefined){
+				
+					toModigfy[key] = modifiers[key]
+				
+				}
+			
+			}
+			
+			return toModigfy;
 			
 		};
-		function update_push(id){
+		
+		function update_push(obj, modifiers){
 			
+			var toModigfy = obj;
 			
+			for(var key in modifiers){
+				
+				if(getSchema()[key] !== undefined){
+					
+					if(toModigfy[key] instanceof Array){
+						
+						toModigfy[key].push(modifiers[key]);
+						
+					}
+					
+				}
+				
+			}
+			return toModigfy;
 			
 		};
 		
 		function unform(db_obj){
 			var obj = {};
 			for(var key in db_obj){
-				
+				/*
 				if(key !== '_id'){
 					obj[key] = db_obj[key].value;
 				}else{
 					obj[key] = db_obj[key];
 				}
-				
+				*/
+				obj[key] = db_obj[key].value;
 			}
 			return obj;
 		}
@@ -257,27 +316,57 @@ var Beagle;
 	
 	var Cursor = function(obj){
 		
+		var dbObject = obj;
+		
 		var _methods = {
 		
 			count: function(){
 				
-				return obj.length;
+				return dbObject.length;
 			
 			},
 			
 			fetch: function(){
 				
-				return obj;
+				return dbObject;
 				
 			},
 			
 			where: function(attr){
 				
+				var nObj = [];
+				
+				for(var key in attr){
+					
+					each(obj, function(o){
+						
+						if(attr[key] === o[key]){
+							nObj.push(o);
+						}
+						
+					});
+						
+				}
+				dbObject = nObj;
+				return this;
+			
 			}
-		
+			
 		};
 		
 		return _methods;
+		
+	}
+	
+	/*******
+	*
+	* Observer
+	*
+	*******/
+	
+	var Observer = function(){
+	
+		
 		
 	}
 	
@@ -455,6 +544,9 @@ var Beagle;
 		},
 		email: {
 			label: 'Email'
+		},
+		arr: {
+			label: 'Array'
 		}
 	});
 	
@@ -463,7 +555,8 @@ var Beagle;
 		var obj = {
 			
 			username: document.getElementById('username').value,
-			email: document.getElementById('email').value
+			email: document.getElementById('email').value,
+			arr: ['test1', 'test2']
 			
 		};
 		
@@ -472,9 +565,10 @@ var Beagle;
 	}, false);
 	
 	
-	//Beagle.removeById(1323646724530);
-	//var test = Beagle.findById(884378941887);
-	Beagle.insert({username: 'alex', email: 'test'});
-	//Beagle.updateByid(884378941887, {set: {email: 'SET!!!'}});
+	//Beagle.updateById(69330297816, {push:{arr: 'test3'}});
+	//console.log(Beagle.findById(69330297816));
+	
+	var where = Beagle.find().where({username: 'alex'}).count();
+	console.log(where);
 	
 })();
