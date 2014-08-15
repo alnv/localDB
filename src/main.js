@@ -10,6 +10,7 @@ var Beagle;
 	* Private Variables
 	*
 	*******/
+	
 	var DBName = 'DB';
 	var schema = {};
 	
@@ -34,10 +35,15 @@ var Beagle;
 		
 			Schema: function(_schema){
 				return Schema(_schema);
+			},
+			
+			show: function(){
+				return DB().show();
 			}
-		
+			
 		};
 		
+		_methods = merge(_methods, Observer());
 		_methods = merge(_methods, Collection());
 		
 		return _methods;
@@ -100,18 +106,23 @@ var Beagle;
 			insert: function(_data){
 				
 				DB().set(formatter(_data));	
+				observe('add', _data);
 				
 			},
 			
 			removeById: function(id){
 			
-				//var attr = ['_id', id];
 				var db = DB().get();
-			
-				delete db[id];
-				DB().refresh(db)
-				db = null;
-				//delete DB().remove(attr);
+				
+				if(db[id] !== undefined){
+					
+					var obj = unform(db[id]);
+					delete db[id];
+					DB().refresh(db)
+					db = null;
+					observe('remove', obj);	
+				
+				}
 				
 			},
 			
@@ -150,6 +161,8 @@ var Beagle;
 				db[id] = formatter(nModel);
 				DB().refresh(db);
 				db = null;
+				
+				observe('update', nModel);
 				
 				return nModel;
 				
@@ -364,11 +377,38 @@ var Beagle;
 	*
 	*******/
 	
-	var Observer = function(){
+	var listener = {
+		update: [],
+		remove: [],
+		add: []
+	}
 	
+	
+	function observe(listen, obj){
 		
+		each(listener[listen], function(fn){
+			
+			fn(obj);
+			
+		});
 		
 	}
+	
+	var Observer = function(){
+		
+		return {
+			
+			on: function(listener_key, callback){
+				
+				listener[listener_key].push(callback);
+				
+				
+			}
+			
+		}
+		
+	}
+	
 	
 	/*******
 	*
@@ -384,6 +424,12 @@ var Beagle;
 			init:  function(){
 				
 				_initialize();
+				
+			},
+			
+			show: function(){
+				
+				return this.get();
 				
 			},
 			
@@ -563,12 +609,36 @@ var Beagle;
 		Beagle.insert(obj);
 		
 	}, false);
+
+	Beagle.on('add', function(obj){
+
+	});
+	
+	Beagle.on('add', function(obj){
+		console.log('ADD');
+	});
 	
 	
-	//Beagle.updateById(69330297816, {push:{arr: 'test3'}});
-	//console.log(Beagle.findById(69330297816));
+	Beagle.on('update', function(obj){
+		console.log(obj);
+	});
 	
-	var where = Beagle.find().where({username: 'alex'}).count();
-	console.log(where);
+	Beagle.on('update', function(){
+		console.log('callback3');
+	});
+	
+	Beagle.on('remove', function(){
+		console.log('remove');
+	});
+	
+	Beagle.on('remove', function(obj){
+		console.log(obj);
+	});
+
+
+	console.log(Beagle);
+	
+	var db = Beagle.show();
+	console.log(db);
 	
 })();
