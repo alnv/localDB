@@ -8,11 +8,18 @@
 	<body>
 		<div>
 			<div>
-				<input type="text" id="username" placeholder="Username"/>
-				<input type="text" id="email" placeholder="email"/>
+				<input type="text" id="username" placeholder="username"/>
+				<input type="text" id="name" placeholder="name"/>
 				<button id="save_btn">Save</button>
 			</div>
 		</div>
+		
+		<div id="output">
+			<ul>
+				
+			</ul>
+		</div>
+		
 		<script src="../src/Beagle.js"></script>
 	
 		<script>
@@ -20,8 +27,30 @@
 			(function(){
 			
 				"use script";
+				
+				Beagle.schema('users', ['username', 'name']);
+				
+				document.getElementById('save_btn').addEventListener('click', function(){
+					
+					var obj = {
+						
+						username: document.getElementById('username').value,
+						name: document.getElementById('name').value
+										
+					}	
+					
+					Beagle.insert('users', obj);
+					
+				});
+				
+				var collections = Beagle.findAll('users');
+				
+				for(var i = 0; i <  collections.count(); i++){
+					console.log(collections.fetch()[i]);
+				}
+				
 				console.log(Beagle);
-			
+				
 			})();
 	
 		</script>
