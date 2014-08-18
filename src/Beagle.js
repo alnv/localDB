@@ -362,6 +362,21 @@ var Beagle;
 			
 			},
 			
+			findAll: function(collectionName){
+				
+				if(!checkCollectionName(collectionName)){
+					
+					throw errorMsg.collectionNameUndefined;
+					
+				}
+				var results = [];
+				var collections = Database().getCollection(collectionName);
+				for(var model in collections){
+					results.push(collections[model]);
+				}
+				return Cursor(results);
+			},
+			
 			remove: function(collectionName, attr){
 				
 				var indizes = this.findIndex(collectionName, attr);
