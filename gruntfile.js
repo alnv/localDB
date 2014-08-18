@@ -31,7 +31,7 @@ module.exports = function(grunt){
 			},
 			
 			target: {
-				src: 'src/main.js',
+				src: 'src/Beagle.js',
 				dest: 'dest/beagle.min.js'
 			}
 			
