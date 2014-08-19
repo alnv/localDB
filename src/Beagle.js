@@ -53,7 +53,17 @@ var Beagle;
 		
 		
 		var methods = {
-		
+			
+			collections: function(){
+				return Database().collections();
+			},
+			
+			empty: function(collectionName){
+				
+				return Database().empty(collectionName);
+				
+			},
+			
 			schema: function(collectionName, schemaFields){
 				
 				
@@ -211,6 +221,63 @@ var Beagle;
 			}
 		}
 		
+		function gt(a,b){
+			if(parseInt(a) > parseInt(b)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+		function gte(a,b){
+			if(parseInt(a) >= parseInt(b)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+		function lt(a,b){
+			if(parseInt(a) < parseInt(b)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+		function lte(a,b){
+			if(parseInt(a) <= parseInt(b)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+		function has(a, b){
+			
+			if(a instanceof Array){
+			
+				var ctl = false;	
+				
+				each(a, function(c){
+					
+					if(b === c){
+						
+						ctl = true;
+						
+					};
+			
+				});
+				
+				if(ctl){
+					return true;
+				}else{
+					return false;
+				}
+				
+			}
+		}
+		
 		return {
 			
 			insert: function(collectionName, model){
@@ -288,7 +355,7 @@ var Beagle;
 				
 			},
 			
-			findIndex: function(collectionName, attr){
+			findIndex: function(collectionName, attr, _collection){
 				
 				var operator;
 				var fieldAttr;
@@ -300,7 +367,7 @@ var Beagle;
 					
 				}
 				
-				var collections = Database().getCollection(collectionName);
+				var collections = _collection !== undefined ? _collection : Database().getCollection(collectionName);
 				
 				if(!isAttr(collectionName, fieldAttr)){
 					
@@ -327,12 +394,25 @@ var Beagle;
 					
 						case 'is':
 							c = is(collections[model][search[0]], search[1]);
-						break;
-					
+						break;					
 						case 'isNot':
 							c = isNot(collections[model][search[0]], search[1]);
 						break;
-					
+						case 'gt':
+							c = gt(collections[model][search[0]], search[1])
+						break;
+						case 'gte':
+							c = gte(collections[model][search[0]], search[1])
+						break;
+						case 'lt':
+							c = lt(collections[model][search[0]], search[1])
+						break;
+						case 'lte':
+							c = lte(collections[model][search[0]], search[1])
+						break;
+						case 'has':
+							c = has(collections[model][search[0]], search[1])
+						break;
 					}
 					
 					if(c){
@@ -346,9 +426,9 @@ var Beagle;
 				
 			},
 			
-			find: function(collectionName, attr){
+			find: function(collectionName, attr, _collection){
 				
-				var indizes = this.findIndex(collectionName, attr);
+				var indizes = this.findIndex(collectionName, attr, _collection);
 				var collections = Database().getCollection(collectionName);
 				var results = [];
 				
@@ -358,7 +438,7 @@ var Beagle;
 				
 				});
 				
-				return Cursor(results);
+				return Cursor(results, collectionName);
 			
 			},
 			
@@ -374,7 +454,7 @@ var Beagle;
 				for(var model in collections){
 					results.push(collections[model]);
 				}
-				return Cursor(results);
+				return Cursor(results, collectionName);
 			},
 			
 			remove: function(collectionName, attr){
@@ -391,7 +471,7 @@ var Beagle;
 					
 				});
 				
-				return Cursor(deleted);
+				return Cursor(deleted, collectionName);
 				
 			},
 			
@@ -415,7 +495,7 @@ var Beagle;
 					
 				});
 				
-				return Cursor(updated);
+				return Cursor(updated, collectionName);
 			},
 			
 			updateByIndex: function(collectionName, id, modifiers){
@@ -483,9 +563,10 @@ var Beagle;
 	*
 	*******/
 	
-	var Cursor = function(collection){
+	var Cursor = function(collection, collectionName){
 		
 		var collection = collection;
+		var currSchema = collectionName;
 		
 		return {
 			
@@ -502,13 +583,16 @@ var Beagle;
 			},
 			
 			where: function(attr){
-			
-			
+				
+				var modCollection = setIndizes(collection);
+				var results = Collection().find(currSchema, attr, modCollection);
+				return results;
 				
 			},
 			
-			sort: function(){
+			limit: function(skip,limit){
 				
+				return collection.splice(skip, limit);
 				
 			}
 			
@@ -592,6 +676,38 @@ var Beagle;
 		
 		return {
 			
+			empty: function(collectionName){
+				
+				if( !this.existCollection(collectionName) ){
+					throw errorMsg.collectionNotExist;
+				}
+				
+				this.save(collectionName, {});
+				return true;
+				
+			},
+			
+			collections: function(){
+				
+				var all =  {};
+				
+				for(var schema in schemas){
+					
+					all[schema] =[];
+					
+					var collection = this.getCollection(schema);
+					
+					for(var model in collection){
+						
+						all[schema].push(collection[model]);
+						
+					}
+					
+				}
+				
+				return all;
+				
+			},
 			
 			addModel: function(collectionName, model){
 				
@@ -662,6 +778,15 @@ var Beagle;
 	* helper function
 	*
 	*******/
+	
+	function setIndizes(arr){
+		
+		var obj = {};
+		each(arr, function(model){
+			obj[model.index] = model;
+		});
+		return obj;
+	}
 	
 	function conformSchemaName(_str){
 		

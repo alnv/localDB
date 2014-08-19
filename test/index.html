@@ -8,8 +8,8 @@
 	<body>
 		<div>
 			<div>
-				<input type="text" id="username" placeholder="username"/>
-				<input type="text" id="name" placeholder="name"/>
+				<input type="text" id="user" placeholder="Benutzer"/>
+				<input type="text" id="age" placeholder="Alter"/>
 				<button id="save_btn">Save</button>
 			</div>
 		</div>
@@ -28,28 +28,47 @@
 			
 				"use script";
 				
-				Beagle.schema('users', ['username', 'name']);
+				Beagle.schema('users', ['user', 'age', 'arr']);
+				Beagle.schema('blog', ['title']);
 				
 				document.getElementById('save_btn').addEventListener('click', function(){
 					
 					var obj = {
 						
-						username: document.getElementById('username').value,
-						name: document.getElementById('name').value
-										
+						user: document.getElementById('user').value,
+						age: document.getElementById('age').value,
+						arr: [1,2,3,4]
 					}	
 					
 					Beagle.insert('users', obj);
 					
 				});
 				
+				//Beagle.insert('users', {user: 'ROBOT', age: 3000, arr: [0,10]});
+				
+				/*
 				var collections = Beagle.findAll('users');
-				
+				//console.log(collections);
 				for(var i = 0; i <  collections.count(); i++){
-					console.log(collections.fetch()[i]);
+					//console.log(collections.fetch()[i]);
 				}
+
+				var test = Beagle.find('users', {gt: {age: 20}});				
+				console.log(test.fetch());
+				var test2 = test.where({is: {user: 'Sina'}});
+				console.log(test2.fetch());
+				//Beagle.empty('users');
+				*/
 				
-				console.log(Beagle);
+				//var test5 = Beagle.findAll('users');
+				//console.log(test5.fetch());
+				
+				//console.log(Beagle.collections());
+				
+				var test7 = Beagle.find('users', { has: { arr: 10 } } );
+				console.log(test7.fetch());
+				
+				//var test5 = Beagle.remove('users', {lt: {age: 20}});
 				
 			})();
 	
