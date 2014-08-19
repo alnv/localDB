@@ -269,12 +269,8 @@ var Beagle;
 			
 				});
 				
-				if(ctl){
-					return true;
-				}else{
-					return false;
-				}
-				
+				return ctl;
+							
 			}
 		}
 		
