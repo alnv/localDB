@@ -67,7 +67,7 @@ var Beagle;
 			
 			view: function(init){
 				
-				return View(init);
+				//return View(init);
 				
 			},
 			
