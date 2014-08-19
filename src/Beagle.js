@@ -32,8 +32,9 @@ var Beagle;
 		collectionNameUndefined: "collection name dont exist",
 		collectionNotExist: "Collection dont exist",
 		indexUndefined: "Index is undefinded",
-		notInSchema: "attribute not in schema define"
-		
+		notInSchema: "attribute not in schema define",
+		viewCollection: "your View need a collection",
+		noObject: "your view need an object as parameter"
 	}
 	
 	/*******
@@ -61,6 +62,12 @@ var Beagle;
 			empty: function(collectionName){
 				
 				return Database().empty(collectionName);
+				
+			},
+			
+			view: function(init){
+				
+				return View(init);
 				
 			},
 			
@@ -205,7 +212,7 @@ var Beagle;
 		}
 		
 		
-		function isNot(a,b){
+		function not(a,b){
 			if(a !== b){
 				return true;
 			}else{
@@ -276,7 +283,7 @@ var Beagle;
 		
 		return {
 			
-			insert: function(collectionName, model){
+			add: function(collectionName, model){
 				
 				if(!checkCollectionName(collectionName)){
 				
@@ -391,8 +398,8 @@ var Beagle;
 						case 'is':
 							c = is(collections[model][search[0]], search[1]);
 						break;					
-						case 'isNot':
-							c = isNot(collections[model][search[0]], search[1]);
+						case 'not':
+							c = not(collections[model][search[0]], search[1]);
 						break;
 						case 'gt':
 							c = gt(collections[model][search[0]], search[1])
@@ -771,6 +778,61 @@ var Beagle;
 	
 	/*******
 	*
+	* View Object
+	*
+	*******/
+	/*
+	var View = function(init){
+		
+		
+		var Initialize = (function(init){
+			
+			if(init === undefined){
+				throw errorMsg.noObject;
+			}	
+			if(init.collection === undefined){
+				throw errorMsg.viewCollection;
+			}
+			if(!Database().existCollection(init.collection)){
+				throw errorMsg.collectionNotExist;
+			}
+			
+			return init;
+			
+		})(init);
+		
+		
+		function createTemplate(){
+		
+			var keys = schemas[Initialize.collection];
+			var collection = Database().getCollection(Initialize.collection);
+			
+			for(var model in collection){
+				
+				console.log(collection[model]);
+				
+			}
+
+			
+		}
+		
+		var methods = {
+			
+			render: function(){
+			
+				createTemplate();
+			
+			}
+			
+		}
+		
+		return methods;
+		
+	}
+	*/
+	
+	/*******
+	*
 	* helper function
 	*
 	*******/
@@ -782,6 +844,7 @@ var Beagle;
 			obj[model.index] = model;
 		});
 		return obj;
+		
 	}
 	
 	function conformSchemaName(_str){
