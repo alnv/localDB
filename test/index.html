@@ -40,7 +40,7 @@
 						arr: [1,2,3,4]
 					}	
 					
-					Beagle.insert('users', obj);
+					Beagle.add('users', obj);
 					
 				});
 				
@@ -65,10 +65,31 @@
 				
 				//console.log(Beagle.collections());
 				
-				var test7 = Beagle.find('users', { has: { arr: 10 } } );
-				console.log(test7.fetch());
+				//var test7 = Beagle.find('users', { has: { arr: 2 } } ).where({not: {user: 'alex'}});
+				//console.log(test7.fetch());
 				
 				//var test5 = Beagle.remove('users', {lt: {age: 20}});
+				
+				/*
+				var test = Beagle.view({
+					
+					collection: 'users',
+					tag: 'div',
+					tagClass: '.myclass',
+					template: '<div></div>',
+					events: {
+						'click .del_btn': 'remove'
+					},
+					remove: function(){
+						
+					}
+					
+				});
+				
+				
+				
+				console.log(test.render());
+				*/
 				
 			})();
 	
