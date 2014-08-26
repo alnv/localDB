@@ -1,12 +1,8 @@
 {
-  "name": "beagle",
-  "version": "0.0.1",
-  "description": "none",
+  "name": "localDB",
+  "version": "1.0.0",
+  "description": "localDB provides functions to interact with localStorage API.",
   "main": "gruntfile.js",
-  "directories": {
-    "doc": "docs",
-    "test": "test"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
