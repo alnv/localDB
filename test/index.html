@@ -2,7 +2,7 @@
 <html>
 	<head>
 	    <meta charset="UTF-8">
-	    <title>Beagle</title>
+	    <title>localDB</title>
 	</head>
 	
 	<body>
@@ -20,7 +20,7 @@
 			</ul>
 		</div>
 		
-		<script src="../src/Beagle.js"></script>
+		<script src="../src/localDB.js"></script>
 	
 		<script>
 	
@@ -28,22 +28,25 @@
 			
 				"use script";
 				
-				Beagle.schema('users', ['user', 'age', 'arr']);
-				Beagle.schema('blog', ['title']);
+				localDB.schema('users', ['user', 'age']);
 				
 				document.getElementById('save_btn').addEventListener('click', function(){
 					
 					var obj = {
 						
 						user: document.getElementById('user').value,
-						age: document.getElementById('age').value,
-						arr: [1,2,3,4]
-					}	
-					
-					Beagle.add('users', obj);
+						age: document.getElementById('age').value
+					};
+
+                    localDB.add('users', obj);
 					
 				});
-				
+
+
+                var alluser = localDB.findAll('users');
+
+                console.log(alluser);
+
 				//Beagle.insert('users', {user: 'ROBOT', age: 3000, arr: [0,10]});
 				
 				/*
