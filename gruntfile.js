@@ -27,12 +27,12 @@ module.exports = function(grunt){
 			options: {
 				mangle: true,
 				compress: true,
-				sourceMap: 'dest/beagle.map',
+				sourceMap: 'dest/localDB.map'
 			},
 			
 			target: {
-				src: 'src/Beagle.js',
-				dest: 'dest/beagle.min.js'
+				src: 'src/localDB.js',
+				dest: 'dest/localDB.min.js'
 			}
 			
 		},
