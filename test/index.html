@@ -28,72 +28,43 @@
 			
 				"use script";
 				
-				localDB.schema('users', ['user', 'age']);
-				
-				document.getElementById('save_btn').addEventListener('click', function(){
-					
-					var obj = {
-						
-						user: document.getElementById('user').value,
-						age: document.getElementById('age').value
-					};
 
+                localDB.schema('users', ['username', 'age']);
+
+                document.getElementById('save_btn').addEventListener('click', function(){
+                    var obj = {
+                        username: document.getElementById('user').value,
+                        age: document.getElementById('age').value
+                    };
                     localDB.add('users', obj);
-					
-				});
+                });
+
+                localDB.watch('add', function(obj, colname){
+                    console.log('add');
+                    console.log(obj);
+                    console.log(colname);
+                });
 
 
-                var alluser = localDB.findAll('users');
+                localDB.watch('remove', function(obj, colname){
+                    console.log('remove');
+                    console.log(obj);
+                    console.log(colname);
+                });
 
-                console.log(alluser);
+                localDB.watch('update', function(obj, colname){
+                    console.log('update');
+                    console.log(obj);
+                    console.log(colname);
+                });
 
-				//Beagle.insert('users', {user: 'ROBOT', age: 3000, arr: [0,10]});
-				
-				/*
-				var collections = Beagle.findAll('users');
-				//console.log(collections);
-				for(var i = 0; i <  collections.count(); i++){
-					//console.log(collections.fetch()[i]);
-				}
+                console.log(localDB);
 
-				var test = Beagle.find('users', {gt: {age: 20}});				
-				console.log(test.fetch());
-				var test2 = test.where({is: {user: 'Sina'}});
-				console.log(test2.fetch());
-				//Beagle.empty('users');
-				*/
-				
-				//var test5 = Beagle.findAll('users');
-				//console.log(test5.fetch());
-				
-				//console.log(Beagle.collections());
-				
-				//var test7 = Beagle.find('users', { has: { arr: 2 } } ).where({not: {user: 'alex'}});
-				//console.log(test7.fetch());
-				
-				//var test5 = Beagle.remove('users', {lt: {age: 20}});
-				
-				/*
-				var test = Beagle.view({
-					
-					collection: 'users',
-					tag: 'div',
-					tagClass: '.myclass',
-					template: '<div></div>',
-					events: {
-						'click .del_btn': 'remove'
-					},
-					remove: function(){
-						
-					}
-					
-				});
-				
-				
-				
-				console.log(test.render());
-				*/
-				
+                //localDB.add('users', {username: 'penis', email: 'nigga', age: 99});
+                //localDB.remove('users', {gte: {age: 99}});
+                //localDB.update('users', { is: { username: 'Alex' } }, { set: { age: 15 } } );
+
+
 			})();
 	
 		</script>
