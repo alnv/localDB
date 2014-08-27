@@ -1,0 +1,90 @@
+localDB
+Methoden
+
+schema
+schema erwartet 2 parameter name(String) und Felder(Array)
+localDB.schema("users", ["username", "email", "age"]);
+
+add
+damit lassen sie Objekte in eine bestehende Collection speichern.
+add erwartet 2 parameter Name(String) der Collection und ein Object(JSON Object).
+localDB.add("users", {
+	username: "Max",
+	email: "max.mustermann@gmail.de",
+	age: 34
+});
+
+remove
+mit remove lassen sie bestimmte Objekte löschen.
+add erwartet 2 parameter Name(String) der Collection und einem Query-Object. Siehe abfragen.
+localDB.remove('users', {is: {username: "max"}});
+Empfohlen jedes gespeicherte Object besitzt ein Index wenn dieser Index in der App eingebaut, ist es besser die Methode removeByIndex zu verwenden. Es ist um einiges schneller.
+z.B localDB.removeByIndex('users', 123456789);
+
+update
+mit update lassen sich bestehend Objekte verändern. Diese Methode benötigt 3 parameter Name der Collection gefolgt von einem Query-Object(Siehe abfragen) und einem Modifier.
+localDB.update('users', {is: {username: "max"}}, {set: {age: 35 } );
+Empfohlen jedes gespeicherte Object besitzt ein Index wenn dieser Index in der App eingebaut, ist es besser die Methode updateByIndex zu verwenden. Es ist um einiges schneller.
+z.B localDB.updateByIndex('users', 123456789);
+Das Modifier Object bittet 3 Schlüssel an pull, push und set.
+das set wird für zeichenketten und Nummern verwenden während pull und push für Arrays.
+z.B
+Man hat ein Array mit folgenden Werten: [33,34]
+ein Array um ein Feld zu erweitern
+{push: {arr: 35}} // arr: [33, 34, 35]
+ein Array um ein bestimmtes Feld zu reduzieren
+{push: {arr: 34}} // arr: [33]
+
+Abfrage:
+Die einzelne Objekte in einer Collection lassen sich auch finden indem man die Methode find() verwenden. Die find() Methode erwartet 2 parameter Collectionsname und Query-Object.
+localDB.find('users', {is: {username: 'max'}});
+localDB.find('users', {get: {age: 30}});
+neben dem is Schlüsseloperator gibt es noch:
+- {is: {}} gemäß "==="
+- {not :{}} gemäß "!=="
+- {gt :{}} gemäß ">"
+- {gte :{}} gemäß ">="
+- {lt :{}} gemäß "<="
+- {lte :{}} gemäß "<="
+- {has :{arr: 32}} sucht nach einem bestimmten Feld in einem Array
+
+localDB.findAll('users') // liefert alle Ergebnisse
+
+Wer den index eines Objektes kennt sollte die Methode findByIndex() verwenden
+z.B localDB.findByIndex('users', 123456789);
+
+Das Cursor Object
+
+Das Cursor Object wird bei einer Suchanfrage zurückgegeben.
+Es beinhaltet folgende Methoden:
+count()
+fetch()
+limit()
+where()
+
+localDB.find('users', {has: {group: 'admin'}}).count() //gibt Anzahl der gefunden Objekte.
+localDB.find('users', {is: {username: 'max'}}).fetch() //gibt ein Array aus den gefundenen Objekten.
+localDB.find('users', {get: {age: 18}}).limit(0, 10); //limitiert die Ausgabe auf 10.
+localDB.find('users', {get: {age: 18}}).where({not: {username: 'max'}}); //damit lassen sich die Ergebnisse verfeinern. Where() Methode liefert ebenfalls eine Cursor Object.
+
+watch
+mit der watch() Methode lassen sie die Methoden add, update und remove überwachen.
+Die watch method erwartet 2 parameter. Ein String und eine callback Funktion. Die Callback function liefert ein Objekt und collectionsname.
+
+localDB.watch('add', function(obj, colname){
+//
+});
+localDB.watch('remove', function(obj, colname){
+//
+});
+
+localDB.watch('update', function(obj, colname){
+//
+});
+
+empty()
+mit der empty() Methode lassen sie alle Objekte in der Collection löschen.
+Erwarten den collectionsnamen als parameter.
+
+collections()
+gibt die gesamte Datenbank zurück.
