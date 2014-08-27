@@ -2,26 +2,6 @@ module.exports = function(grunt){
 	
 	grunt.initConfig({
 		
-		/*
-		concat: {
-			
-			options: {
-				
-				seperator: ";"
-				
-			},
-			
-			target: {
-				
-				src: [],
-				dest: "dest/main.js"
-				
-			}
-			
-			
-		},
-		*/
-		
 		uglify: {
 			
 			options: {
