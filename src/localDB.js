@@ -64,13 +64,14 @@ var localDB;
 				return Database().empty(collectionName);
 				
 			},
-			
+
+            /*
 			view: function(init){
 				
 				//return View(init);
 				
 			},
-			
+			*/
 			schema: function(collectionName, schemaFields){
 				
 				
@@ -94,7 +95,7 @@ var localDB;
 				}
 				
 			}
-		}
+		};
 		
 		methods = merge(methods, Collection());
 		methods = merge(methods, Observer());
@@ -272,7 +273,7 @@ var localDB;
 						
 						ctl = true;
 						
-					};
+					}
 			
 				});
 				
@@ -297,7 +298,7 @@ var localDB;
 				
 					index: createId()
 				
-				}
+				};
 				
 				each(fields, function(field){
 					
@@ -307,7 +308,7 @@ var localDB;
 				
 				Database().addModel(collectionName, createModel);
 				
-				observe('add', createModel);
+				observe('add', createModel, collectionName);
 				
 				return createModel;
 				
@@ -331,7 +332,7 @@ var localDB;
 					delete collections[id];
 					
 					Database().save(collectionName, collections);
-					observe('remove', deleted);
+					observe('remove', deleted, collectionName);
 						
 				}		
 				
@@ -473,8 +474,9 @@ var localDB;
 					self.removeByIndex(collectionName, index);
 					
 				});
-				
-				return Cursor(deleted, collectionName);
+
+                return deleted;
+				//return Cursor(deleted, collectionName);
 				
 			},
 			
@@ -482,7 +484,7 @@ var localDB;
 				
 				var indizes = this.findIndex(collectionName, attr);
 				var self = this;
-				var updated = []
+				var updated = [];
 				
 				each(indizes, function(index){
 					
@@ -497,8 +499,11 @@ var localDB;
 					updated.push(collections[index]);
 					
 				});
-				
-				return Cursor(updated, collectionName);
+
+                observe('update', updated, collectionName);
+
+                return updated;
+				//return Cursor(updated, collectionName);
 			},
 			
 			updateByIndex: function(collectionName, id, modifiers){
@@ -551,8 +556,7 @@ var localDB;
 				collections[model.index] = model;
 				
 				Database().save(collectionName, collections);
-				
-				observe('update', updated);
+
 
 			}
 			
@@ -645,11 +649,11 @@ var localDB;
 		add: []
 	};
 	
-	function observe(listen, obj){
+	function observe(listen, obj, collectionName){
 		
 		each(listener[listen], function(fn){
 			
-			fn(obj);
+			fn(obj, collectionName);
 			
 		});
 		
@@ -659,7 +663,7 @@ var localDB;
 		
 		return {
 			
-			on: function(listener_key, callback){
+			watch: function(listener_key, callback){
 				
 				listener[listener_key].push(callback);
 				
