@@ -1,57 +1,68 @@
-localDB
+localDB.js
+
+Hin und wieder habe ich den localStorage dazu verwendet um Benutzer eingaben zwischen zu speichern, falls der User aus versehen die Seite verlässt ohne zu speichern. Das coole an localStorage ist das beinah alle gängigen Browser es unterstützen. Laut caniuse.com über 89%. Das Problem besteht darin, dass localStorage nur String speichern kann, das heißt für mich, meine Objekte und Arrays erst zu Zeichenkette umwandeln, speichern und beim Abruf wieder zurück und das nervt. Und deswegen habe ich ein Framework geschrieben.
+Im diesem Artikel zeige ich alle features. Das ganze orientiert sich an NoSQL vor allem dingen an mongoDB.
+
 Methoden
 
-schema
-schema erwartet 2 parameter name(String) und Felder(Array)
+schema(String, Array)
+Als aller erst muss ein Schema definiert werden. Die schema Methode erwartet den Collectionsname und die dazu gehörigen Felder. 
 localDB.schema("users", ["username", "email", "age"]);
 
-add
-damit lassen sie Objekte in eine bestehende Collection speichern.
-add erwartet 2 parameter Name(String) der Collection und ein Object(JSON Object).
+add(String, Object)
+Damit lassen sie Objekte in eine bestehende Collection speichern.
+Die add Methode erwartet 2 parameter Collectionsname und ein Object.
 localDB.add("users", {
 	username: "Max",
 	email: "max.mustermann@gmail.de",
 	age: 34
 });
 
-remove
-mit remove lassen sie bestimmte Objekte löschen.
-add erwartet 2 parameter Name(String) der Collection und einem Query-Object. Siehe abfragen.
+remove(String, Object)
+Mit remove lassen sie bestimmte Objekte löschen.
+Die remove Methode erwartet 2 parameter Collectionsname und ein Queryobject.
+Siehe abfragen.
 localDB.remove('users', {is: {username: "max"}});
-Empfohlen jedes gespeicherte Object besitzt ein Index wenn dieser Index in der App eingebaut, ist es besser die Methode removeByIndex zu verwenden. Es ist um einiges schneller.
-z.B localDB.removeByIndex('users', 123456789);
 
-update
-mit update lassen sich bestehend Objekte verändern. Diese Methode benötigt 3 parameter Name der Collection gefolgt von einem Query-Object(Siehe abfragen) und einem Modifier.
+Empfohlen: jedes gespeicherte Object besitzt ein Index. Es istbesser die Methode removeByIndex zu verwenden. Es ist um einiges schneller.
+localDB.removeByIndex('users', 123456789);
+
+update(String, Object, Object)
+Mit update lassen sich bestehend Objekte verändern. Diese Methode benötigt 3 parameter Collectionsname gefolgt von einem Queryobject(Siehe abfragen) und einem Modifier.
 localDB.update('users', {is: {username: "max"}}, {set: {age: 35 } );
-Empfohlen jedes gespeicherte Object besitzt ein Index wenn dieser Index in der App eingebaut, ist es besser die Methode updateByIndex zu verwenden. Es ist um einiges schneller.
+
+Empfohlen jedes gespeicherte Object besitzt ein Index. Es ist besser die Methode updateByIndex zu verwenden. Es ist um einiges schneller.
 z.B localDB.updateByIndex('users', 123456789);
-Das Modifier Object bittet 3 Schlüssel an pull, push und set.
-das set wird für zeichenketten und Nummern verwenden während pull und push für Arrays.
-z.B
-Man hat ein Array mit folgenden Werten: [33,34]
-ein Array um ein Feld zu erweitern
+
+Das Modifier Object bittet 3 Methoden an pull, push und set.
+das set wird für Zeichenketten und Nummern verwenden während pull und push für Arrays.
+//Man hat ein Array mit folgenden Werten: 
+var arr = [33,34];
+//Array um ein Feld zu erweitern
 {push: {arr: 35}} // arr: [33, 34, 35]
-ein Array um ein bestimmtes Feld zu reduzieren
+//Array um ein bestimmtes Feld zu reduzieren
 {push: {arr: 34}} // arr: [33]
 
 Abfrage:
-Die einzelne Objekte in einer Collection lassen sich auch finden indem man die Methode find() verwenden. Die find() Methode erwartet 2 parameter Collectionsname und Query-Object.
+Die einzelne Objekte in einer Collection lassen sich auch suchen und finden indem man die Methode find() verwenden. Die find() Methode erwartet 2 parameter Collectionsname und Queryobject.
+
 localDB.find('users', {is: {username: 'max'}});
 localDB.find('users', {get: {age: 30}});
+
 neben dem is Schlüsseloperator gibt es noch:
-- {is: {}} gemäß "==="
-- {not :{}} gemäß "!=="
-- {gt :{}} gemäß ">"
-- {gte :{}} gemäß ">="
-- {lt :{}} gemäß "<="
-- {lte :{}} gemäß "<="
-- {has :{arr: 32}} sucht nach einem bestimmten Feld in einem Array
+- {is: {}} // gemäß "==="
+- {not :{}} // gemäß "!=="
+- {gt :{}} // gemäß ">"
+- {gte :{}} // gemäß ">="
+- {lt :{}} // gemäß "<="
+- {lte :{}} // gemäß "<="
+- {has :{arr: 32}} // sucht nach einem bestimmten Feld in einem Array
 
 localDB.findAll('users') // liefert alle Ergebnisse
 
 Wer den index eines Objektes kennt sollte die Methode findByIndex() verwenden
-z.B localDB.findByIndex('users', 123456789);
+
+localDB.findByIndex('users', 123456789);
 
 Das Cursor Object
 
@@ -63,13 +74,13 @@ limit()
 where()
 
 localDB.find('users', {has: {group: 'admin'}}).count() //gibt Anzahl der gefunden Objekte.
-localDB.find('users', {is: {username: 'max'}}).fetch() //gibt ein Array aus den gefundenen Objekten.
-localDB.find('users', {get: {age: 18}}).limit(0, 10); //limitiert die Ausgabe auf 10.
+localDB.find('users', {is: {username: 'max'}}).fetch() //sammelt alle Ergenisse in ein Array.
+localDB.find('users', {get: {age: 18}}).limit(0, 10); //limitiert die Ausgabe auf 10. „Skip and Limit“
 localDB.find('users', {get: {age: 18}}).where({not: {username: 'max'}}); //damit lassen sich die Ergebnisse verfeinern. Where() Methode liefert ebenfalls eine Cursor Object.
 
-watch
+Watch(String, callback)
 mit der watch() Methode lassen sie die Methoden add, update und remove überwachen.
-Die watch method erwartet 2 parameter. Ein String und eine callback Funktion. Die Callback function liefert ein Objekt und collectionsname.
+Die watch method erwartet 2 parameter. Ein String und eine callback Function. Die Callback function liefert ein Objekt und den Collectionsnamen. Diese Methode ist bestens für Live update mit einem Server geeignet oder Template.
 
 localDB.watch('add', function(obj, colname){
 //
@@ -82,9 +93,9 @@ localDB.watch('update', function(obj, colname){
 //
 });
 
-empty()
-mit der empty() Methode lassen sie alle Objekte in der Collection löschen.
-Erwarten den collectionsnamen als parameter.
+empty(String)
+Mit der empty() Methode lassen sie alle Objekte in der Collection löschen.
+Erwarten den collectionsnamen als Parameter.
 
 collections()
-gibt die gesamte Datenbank zurück.
+Liefert die gesamte Datenbank.
