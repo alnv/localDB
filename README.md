@@ -15,14 +15,14 @@ this methods are available
 - empty()
 - collections()
 
-## Create schema(String, Array)
+### Create schema(String, Array)
 
 ```
   localDB.schema("users", ["id", "username", "email", "age"]);
   localDB.schema("posts", ["title", "description", "userID"]);
 ```
 
-## add(String, Object) new item to your collection
+### add(String, Object) new item to your collection
 
 ```
   localDB.add("users", {
@@ -33,7 +33,7 @@ this methods are available
   });
 ```
 
-## remove(String, Object) item from your collection
+### remove(String, Object) item from your collection
 
 ```
   localDB.remove('users', {is: {username: "max"}});
@@ -49,7 +49,7 @@ this methods are available
   
 ```
 
-## update(String, Object, Object)
+### update(String, Object, Object)
 
 ```
   localDB.update('users', {is: {username: "max"}}, {set: {age: 35 } );
@@ -60,7 +60,7 @@ this methods are available
   
 ```
 
-## find(String, Object)
+### find(String, Object)
 
 ```
   var cursor = localDB.find('users', {is: {username: 'max'}});
@@ -75,8 +75,8 @@ this methods are available
   
 ```
 
-## watch(String, Callback) 
-### you can observe add, update and remove methods
+### watch(String, Callback) 
+#### you can observe add, update and remove methods
 
 ```
   localDB.watch('add', function(obj, colname){
@@ -92,14 +92,14 @@ this methods are available
   });
   
 ```
-## empty(String) method delete all items in a collection
+### empty(String) method delete all items in a collection
 
 ```
   localDB.empty(users);
   
 ```
 
-## collections() return entire database
+### collections() return entire database
 
 ```
   localDB.collections();
