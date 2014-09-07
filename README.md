@@ -15,6 +15,14 @@ this methods are available
 - empty()
 - collections()
 
+### add localDB in your html file
+
+```
+<script src="localDB.js"></script>
+
+```
+
+
 ### Create schema(String, Array)
 
 ```
