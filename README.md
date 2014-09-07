@@ -114,4 +114,4 @@ this methods are available
   
 ```
 
-you find more on my website (http://alexandernaumov.de/blog/localdb-js-die-offline-datenbank-fuer-javascript.html)
+you find more on my website http://alexandernaumov.de/blog/localdb-js-die-offline-datenbank-fuer-javascript.html
