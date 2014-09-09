@@ -1,7 +1,7 @@
 # localDB.js
-=======
 
 localDB.js provides couple of functions to interact with localStorage API. Inspired by mongoDB.
+you find more on my website http://alexandernaumov.de/blog/localdb-js-die-offline-datenbank-fuer-javascript.html
 
 this methods are available
 
@@ -114,4 +114,3 @@ this methods are available
   
 ```
 
-you find more on my website http://alexandernaumov.de/blog/localdb-js-die-offline-datenbank-fuer-javascript.html
