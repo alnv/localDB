@@ -1,7 +1,6 @@
 # localDB.js
 
 localDB.js provides couple of functions to interact with localStorage API. Inspired by mongoDB.
-you find more on my website http://alexandernaumov.de/blog/localdb-js-die-offline-datenbank-fuer-javascript.html
 
 this methods are available
 
@@ -15,24 +14,24 @@ this methods are available
 - empty()
 - collections()
 
-### add localDB in your html file
+## add localDB in your html file
 
-```
+```javascript
 <script src="localDB.js"></script>
 
 ```
 
 
-### Create schema(String, Array)
+## Create schema(String, Array)
 
-```
+```javascript
   localDB.schema("users", ["id", "username", "email", "age"]);
   localDB.schema("posts", ["title", "description", "userID"]);
 ```
 
-### add(String, Object) new item to your collection
+## add(String, Object) new item to your collection
 
-```
+```javascript
   localDB.add("users", {
     id: 1
     username: "Max",
@@ -41,9 +40,9 @@ this methods are available
   });
 ```
 
-### remove(String, Object) item from your collection
+## remove(String, Object) item from your collection
 
-```
+```javascript
   localDB.remove('users', {is: {username: "max"}});
   
   //{is: {}} is like "==="
@@ -57,9 +56,9 @@ this methods are available
   
 ```
 
-### update(String, Object, Object)
+## update(String, Object, Object)
 
-```
+```javascript
   localDB.update('users', {is: {username: "max"}}, {set: {age: 35 } );
   
   //if you have an array item you can use pull or push method
@@ -68,9 +67,9 @@ this methods are available
   
 ```
 
-### find(String, Object)
+## find(String, Object)
 
-```
+```javascript
   var cursor = localDB.find('users', {is: {username: 'max'}});
   //var cursor = localDB.find('users', {gt: {age: 30}});
   
@@ -83,10 +82,10 @@ this methods are available
   
 ```
 
-### watch(String, Callback) 
-#### you can observe add, update and remove methods
+## watch(String, Callback) 
+you can observe add, update and remove methods
 
-```
+```javascript
   localDB.watch('add', function(obj, colname){
     //
   });
@@ -100,16 +99,16 @@ this methods are available
   });
   
 ```
-### empty(String) method delete all items in a collection
+## empty(String) method delete all items in a collection
 
-```
+```javascript
   localDB.empty(users);
   
 ```
 
-### collections() return entire database
+## collections() return entire database
 
-```
+```javascript
   localDB.collections();
   
 ```
