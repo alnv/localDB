@@ -112,6 +112,6 @@ you can observe add, update and remove methods
   localDB.collections();
   
 ```
-
-### Author: [Alexander Naumov](http://www.alexandernaumov.de)
-### Doc (German): [Offline Datenbank mit Javascript](http://www.alexandernaumov.de/blog/localdb-js-die-offline-datenbank-fuer-javascript)
+### more
+- Author: [Alexander Naumov](http://www.alexandernaumov.de)
+- Doc (German): [Offline Datenbank mit Javascript](http://www.alexandernaumov.de/blog/localdb-js-die-offline-datenbank-fuer-javascript)
