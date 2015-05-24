@@ -113,3 +113,4 @@ you can observe add, update and remove methods
   
 ```
 
+### Author: [Alexander Naumov](http://www.alexandernaumov.de)
