@@ -114,3 +114,4 @@ you can observe add, update and remove methods
 ```
 
 ### Author: [Alexander Naumov](http://www.alexandernaumov.de)
+### Doc (German): [Offline Datenbank mit Javascript](http://www.alexandernaumov.de/blog/localdb-js-die-offline-datenbank-fuer-javascript)
